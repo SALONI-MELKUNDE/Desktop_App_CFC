@@ -53,7 +53,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tabs.addTab(self.tab5, "Results")
         self.tabs.addTab(self.tab6, "Visualization")
 
-        # First Tab - Welcome
+        #Welcome
         self.tab1_layout = QGridLayout(self.tab1)
         self.individual_rbtn = QRadioButton("Individual")
         self.individual_rbtn.setFont(QFont("Arial", 11, QFont.Bold))
@@ -83,7 +83,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tab1_name_input.editingFinished.connect(lambda: self.carbonCalculator_func("Details"))
         self.tab1_year_input.currentIndexChanged.connect(lambda: self.carbonCalculator_func("Details"))
 
-        # Second Tab - Energy
+        #Energy
         self.tab2_layout = QGridLayout(self.tab2)
         self.tab2_layout.setAlignment(Qt.AlignCenter)
 
@@ -112,7 +112,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tab2_layout.addWidget(self.tab2_previous_button, 5, 0)
         self.tab2_layout.addWidget(self.tab2_next_button, 5, 3)
 
-        # Third Tab - Waste
+        #Waste
         self.tab3_layout = QGridLayout(self.tab3)
         self.tab3_layout.setAlignment(Qt.AlignCenter)
 
@@ -136,7 +136,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tab3_layout.addWidget(self.tab3_previous_button, 4, 0)
         self.tab3_layout.addWidget(self.tab3_next_button, 4, 3)
 
-        # Fourth Tab - Travel/Transport
+        #Travel/Transport
         self.tab4_layout = QGridLayout(self.tab4)
         self.tab4_layout.setAlignment(Qt.AlignCenter)
 
@@ -160,7 +160,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tab4_layout.addWidget(self.tab4_previous_button, 4, 0)
         self.tab4_layout.addWidget(self.tab4_next_button, 4, 3)
 
-        # Fifth Tab - Results
+        #Results
         self.tab5gb = QGroupBox()
         self.tab5layout = QGridLayout()
         self.tab5gb.setLayout(self.tab5layout)
@@ -203,7 +203,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.tab5_layout.addWidget(self.tab5_next_button, 1, 2)
         self.tab5_calculate_button.clicked.connect(self.calculate)
 
-        # Sixth Tab - Visualization
+        #Visualization
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax = self.fig.add_subplot(111)
         self.canvas = FigureCanvas(self.fig)
@@ -259,7 +259,7 @@ class CarbonFootprintCalculator(QMainWindow):
         self.table.setItem(2, 1, QTableWidgetItem("%.2f" % travel_result))
         self.table.setItem(3, 1, QTableWidgetItem("%.2f" % total_result))  # Display total
 
-        # Update visualization with bar chart
+        #bar chart
         self.ax.clear()
         operators = ['Energy', 'Waste', 'Business Travel']
         results = [energy_result, waste_result, travel_result]
@@ -273,46 +273,46 @@ class CarbonFootprintCalculator(QMainWindow):
         pdf = canvas.Canvas(filename, pagesize=letter)
         pdf.setTitle("Carbon Footprint Report")
 
-        # Page setup
+        
         pdf.setFont("Helvetica-Bold", 16)
         pdf.drawString(30, 750, "Carbon Footprint Report")
         pdf.setFont("Helvetica", 12)
 
-        # Add user details
+        
         y_position = 720
         for key, value in self.carbonCalculator["Details"].items():
             pdf.drawString(30, y_position, f"{key}: {value}")
             y_position -= 20
 
-        # Add results
+        
         y_position -= 20
         pdf.setFont("Helvetica-Bold", 14)
         pdf.drawString(30, y_position, "Results")
         pdf.setFont("Helvetica", 12)
         y_position -= 20
 
-        for i in range(4):  # Iterate over the table rows
+        for i in range(4):  
             parameter = self.table.item(i, 0).text()
             value = self.table.item(i, 1).text()
             pdf.drawString(30, y_position, f"{parameter}: {value} kg CO2")
             y_position -= 20
 
-        # Leave space between the results and the chart
+        
         y_position -= 40
 
-        # Save the plot as a temporary image
+        
         buf = io.BytesIO()
         self.fig.savefig(buf, format='png')
         buf.seek(0)
         img = ImageReader(buf)
 
-        # Add the image to the PDF with proper spacing
-        pdf.drawImage(img, 50, y_position - 250, width=500, height=300)  # Adjusted position
+        
+        pdf.drawImage(img, 50, y_position - 250, width=500, height=300)
 
-        # Save the PDF
+        # SavethePDF
         pdf.save()
         buf.close()
-        os.startfile(filename)  # Open the PDF after saving (Windows-specific)
+        os.startfile(filename)  
 
     def switchTab(self, index):
         self.tabs.setCurrentIndex(index)
